@@ -41,6 +41,7 @@ const breadcrumbItems = [
     pageUrl={Astro.url.href}
     pageTitle={title}
     pageDescription={description}
+    faqItems={content.faqItems}
     breadcrumbItems={breadcrumbItems}
     communeName={commune.nom}
     zipCode={commune.codePostal}
@@ -85,6 +86,63 @@ const breadcrumbItems = [
 
           <h3>🏡 Impact sur la valeur verte de votre maison à {commune.nom}</h3>
           <p>{content.realEstateInsight}</p>
+
+          <h2>Comparatif des 5 meilleures wallbox pour {commune.nom}</h2>
+          <p>Voici les caractéristiques clés des 5 modèles de bornes résidentielles les plus recommandés et installés par nos techniciens IRVE dans le Nord :</p>
+          <ul style="padding-left: 20px; display: flex; flex-direction: column; gap: 8px;">
+            <li><strong>1. Hager Witty Star</strong> : La borne la plus robuste du marché, idéale pour une installation extérieure à {commune.nom} car elle résiste parfaitement aux intempéries et intègre une protection renforcée.</li>
+            <li><strong>2. Wallbox Pulsar Plus</strong> : Très compacte et connectée en Wi-Fi/Bluetooth. Elle permet de suivre ses consommations en temps réel et propose un délestage dynamique très réactif.</li>
+            <li><strong>3. Schneider EVlink Home</strong> : Une borne minimaliste, fiable et économique, conçue spécialement pour charger à domicile sans surcharger votre réseau électrique.</li>
+            <li><strong>4. Easee Charge One</strong> : Un design scandinave ultra-moderne, connectée en 4G gratuite à vie. Elle s'adapte automatiquement à toutes les puissances de charge (monophasé/triphasé).</li>
+            <li><strong>5. Legrand Green'Up Premium</strong> : La référence de la sécurité électrique par le fabricant français. Elle propose un pilotage simple et une grande longévité de fonctionnement.</li>
+          </ul>
+
+          <h2>Temps de charge par modèle de VE populaire</h2>
+          <p>La puissance de charge de la wallbox impacte directement le temps nécessaire pour remplir la batterie. Voici un récapitulatif pour les modèles de véhicules électriques les plus courants dans le 59 :</p>
+          <table class="data-table" style="margin: 20px 0;">
+            <thead>
+              <tr>
+                <th>Modèle du Véhicule</th>
+                <th>Capacité Batterie</th>
+                <th>Temps de charge sur Wallbox 7.4 kW</th>
+                <th>Temps de charge sur Wallbox 11 kW</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Tesla Model Y / 3</strong></td>
+                <td>60 kWh</td>
+                <td>~8 heures (Monophasé)</td>
+                <td>~5.5 heures (Triphasé)</td>
+              </tr>
+              <tr>
+                <td><strong>Peugeot e-208 / e-2008</strong></td>
+                <td>50 kWh</td>
+                <td>~6.5 heures (Monophasé)</td>
+                <td>~4.5 heures (Triphasé)</td>
+              </tr>
+              <tr>
+                <td><strong>Renault Megane E-Tech</strong></td>
+                <td>60 kWh</td>
+                <td>~8 heures (Monophasé)</td>
+                <td>~5.5 heures (Triphasé)</td>
+              </tr>
+              <tr>
+                <td><strong>Dacia Spring</strong></td>
+                <td>27 kWh</td>
+                <td>~3.5 heures (limité à 6.6 kW)</td>
+                <td>Non compatible 11 kW AC</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <h2>Wallbox connectée vs non connectée : quel intérêt ?</h2>
+          <p>Le choix d'une borne connectée à {commune.nom} apporte des avantages considérables pour piloter vos consommations d'énergie au quotidien :</p>
+          <ul style="padding-left: 20px; display: flex; flex-direction: column; gap: 8px;">
+            <li><strong>Pilotage tarifaire</strong> : Vous programmez précisément le déclenchement de la charge pendant les heures les moins chères (tarif Heures Creuses d'Enedis).</li>
+            <li><strong>Verrouillage à distance</strong> : En activant le verrouillage par smartphone ou carte RFID, vous évitez que des tiers n'utilisent votre borne si elle est posée en extérieur.</li>
+            <li><strong>Suivi comptable</strong> : L'application génère des rapports détaillés de votre consommation en kWh et en euros, idéal si vous devez vous faire rembourser vos frais de recharge par votre entreprise.</li>
+          </ul>
 
           <h2>Tarifs comparatifs de pose de Wallbox à {commune.nom}</h2>
           <table class="data-table">
@@ -133,6 +191,37 @@ const breadcrumbItems = [
             ))}
           </div>
 
+          <!-- Resources and external links for Google EEAT -->
+          <div class="eeat-resources-box" style="background: var(--primary-light); border: 1.5px solid var(--border-color); padding: 25px; border-radius: var(--radius-md); margin-top: 40px;">
+            <h3 style="margin-top: 0; color: var(--primary); font-size: 17px; font-weight: 700; border-bottom: 2px solid var(--border-color); padding-bottom: 8px; margin-bottom: 15px;">🔗 Liens utiles &amp; Documents officiels pour {commune.nom}</h3>
+            <ul style="list-style: none; padding-left: 0; display: flex; flex-direction: column; gap: 12px; font-size: 14px; margin-bottom: 0;">
+              {content.externalLinks.map((link) => (
+                <li>
+                  <a href={link.url} target="_blank" rel="noopener noreferrer" style="color: var(--secondary); font-weight: 700; text-decoration: underline;">
+                    {link.label}
+                  </a>
+                  <p style="margin: 3px 0 0 0; font-size: 12.5px; color: var(--text-muted); line-height: 1.4;">{link.description}</p>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <!-- Local cluster linking -->
+          <div class="local-cluster-box" style="background: var(--card-bg); border: 1px solid var(--border-color); padding: 25px; border-radius: var(--radius-md); margin-top: 40px; box-shadow: var(--shadow-sm);">
+            <h4 style="margin-top: 0; margin-bottom: 15px; color: var(--primary); font-size: 15px; font-weight: 700;">🛠️ Prestations électriques à {commune.nom} (59) :</h4>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; font-size: 13.5px;">
+              <a href={`/installateur-borne-recharge-${commune.slug}/`} style="color: var(--secondary); font-weight: 700; text-decoration: underline;">
+                Installation Borne {commune.nom}
+              </a>
+              <a href={`/borne-recharge-copropriete-${commune.slug}/`} style="color: var(--secondary); font-weight: 700; text-decoration: underline;">
+                Recharge en Copropriété {commune.nom}
+              </a>
+              <a href={`/wallbox-${commune.slug}/`} style="color: var(--secondary); font-weight: 700; text-decoration: underline;">
+                Wallbox Rapide {commune.nom}
+              </a>
+            </div>
+          </div>
+
           <!-- Silo Links -->
           <div class="silo-linking-box" style="background: var(--card-bg); border: 1px solid var(--border-color); padding: 25px; border-radius: var(--radius-md); margin-top: 50px;">
             <h4 style="margin-top: 0; margin-bottom: 10px; color: var(--primary); font-size: 15px; font-weight: 700;">📍 Installateurs de Wallbox dans les communes voisines :</h4>
@@ -159,6 +248,20 @@ const breadcrumbItems = [
           <div class="sidebar-widget">
             <h3>🔌 Les marques partenaires</h3>
             <p style="font-size: 13px;">Nous installons les plus grandes marques de wallbox : Schneider Electric, Legrand, Hager, Wallbox (Pulsar), Easee et EVBox.</p>
+          </div>
+
+          <div class="sidebar-widget">
+            <h3>📚 Guides et astuces</h3>
+            <ul style="padding-left: 15px; font-size: 13px; color: var(--text-muted); display: flex; flex-direction: column; gap: 8px;">
+              {content.guideLinks.map((guide) => (
+                <li>
+                  <a href={guide.href} style="color: var(--primary); font-weight: 700;">
+                    {guide.label}
+                  </a>
+                  <p style="margin: 2px 0 0 0; font-size: 11.5px; color: var(--text-muted);">{guide.desc}</p>
+                </li>
+              ))}
+            </ul>
           </div>
         </aside>
 

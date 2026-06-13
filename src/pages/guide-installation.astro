@@ -30,45 +30,81 @@ const breadcrumbItems = [
         
         <!-- Main Content -->
         <div class="static-main-content rich-text" style="background: var(--card-bg); padding: 40px; border-radius: var(--radius-md); box-shadow: var(--shadow-sm); border: 1px solid var(--border-color);">
-          <h1 style="font-family: var(--font-heading); font-size: 32px; font-weight: 700; color: var(--primary); margin-bottom: 20px;">Guide Technique : Installer une Wallbox chez soi</h1>
+          <h1 style="font-family: var(--font-heading); font-size: 32px; font-weight: 700; color: var(--primary); margin-bottom: 20px;">Guide Technique Complet : Installer une Wallbox chez soi dans le Nord (59)</h1>
           
           <p>
-            L'installation d'une infrastructure de recharge pour véhicule électrique (IRVE) requiert des compétences en électricité industrielle et domestique. Pour garantir la sécurité de votre foyer dans le Nord et la longévité de votre batterie de voiture, voici les étapes techniques et normes réglementaires de câblage.
+            L'installation d'une infrastructure de recharge pour véhicule électrique (IRVE) n'est pas un bricolage de dimanche. Elle requiert des compétences en électricité de puissance, une connaissance approfondie des normes de sécurité française NF C 15-100, et une qualification professionnelle obligatoire. Ce guide technique détaille chaque étape du chantier pour que vous sachiez exactement à quoi vous attendre lorsque l'électricien viendra poser votre borne dans le Nord.
           </p>
 
-          <h2>1. Le Schéma de Câblage Électrique IRVE</h2>
+          <blockquote style="border-left: 4px solid var(--accent); background: var(--primary-light); padding: 15px 20px; margin: 25px 0; border-radius: var(--radius-sm);">
+            <strong>⚠️ Rappel légal :</strong> Depuis le décret du 12 janvier 2017, toute borne de recharge d'une puissance supérieure à 3,7 kW doit être installée par un <a href="/guides/installateur-irve-nord-certification/" style="color: var(--secondary); font-weight: 700;">électricien certifié IRVE</a>. C'est la condition sine qua non pour bénéficier des aides financières et être couvert par votre assurance habitation.
+          </blockquote>
+
+          <h2>1. Le Diagnostic Préalable de votre Installation Électrique</h2>
           <p>
-            Une borne de recharge ne se branche jamais directement sur un circuit électrique existant de la maison. Elle requiert une ligne dédiée tirée directement du tableau électrique principal :
+            Avant toute pose, l'électricien IRVE effectue une visite technique obligatoire de votre logement pour vérifier trois points critiques :
           </p>
           <ul style="margin-left: 20px; margin-bottom: 20px; display: flex; flex-direction: column; gap: 8px;">
-            <li><strong>Le Câble Électrique :</strong> Section minimale de <strong>10 mm²</strong> (en cuivre) pour une borne de 7.4 kW (monophasée) avec moins de 15 mètres de distance. Pour les distances plus grandes, une section de 16 mm² est requise pour limiter les chutes de tension.</li>
-            <li><strong>L'Interrupteur Différentiel dédié :</strong> Type A ou type B obligatoire (30 mA), capable de détecter les courants de fuite à composante continue (spécifiques aux batteries de VE).</li>
-            <li><strong>Le Disjoncteur Divisionnaire :</strong> Calibre 40A en monophasé pour une wallbox 32A, courbe C, protégeant la ligne contre les surcharges thermiques et les courts-circuits.</li>
+            <li><strong>La qualité de la prise de terre :</strong> La résistance de la boucle de terre ne doit pas dépasser <strong>100 Ohms</strong>. Au-delà, le véhicule électrique refusera de démarrer la charge par sécurité (le BMS détecte un défaut d'isolement). Dans les vieilles maisons en briques du Nord, il est fréquent de devoir enfoncer un ou deux piquets de terre supplémentaires dans le jardin.</li>
+            <li><strong>L'état du tableau électrique :</strong> Le tableau doit disposer de rails DIN libres pour accueillir les protections dédiées. Si votre tableau est saturé ou hors normes (ancien fusible à broches), un remplacement ou une extension sera nécessaire.</li>
+            <li><strong>Le type d'alimentation :</strong> <a href="/guides/monophase-triphase-compteur-enedis-nord/" style="color: var(--secondary); font-weight: 700;">Monophasé ou triphasé</a> ? Cela détermine la puissance maximale de votre future borne et les travaux à prévoir sur votre compteur Enedis.</li>
           </ul>
 
-          <h2>2. Le Délestage Dynamique avec Compteur Linky</h2>
+          <h2>2. Le Schéma de Câblage Électrique IRVE</h2>
           <p>
-            Le principal risque technique lors de la charge rapide à 7.4 kW à domicile est la disjonction générale de votre compteur Enedis (lorsque vous allumez les plaques à induction, le four, et que la voiture charge simultanément). 
-            La solution consiste à installer un <strong>délestage dynamique</strong>. Branché sur la sortie TIC (Télé-Information Client) de votre compteur Linky, il indique en temps réel la consommation de la maison à la borne, qui adapte sa puissance instantanément pour ne jamais dépasser la puissance souscrite de votre abonnement.
-          </p>
-
-          <h2>3. Les Normes de Sécurité &amp; Indices de Protection</h2>
-          <p>
-            Dans le Nord, où le gel, le brouillard et la pluie fine sont fréquents, la borne de recharge doit présenter des indices de résistance élevés si elle est placée à l'extérieur :
+            Une borne de recharge ne se branche jamais sur un circuit existant de la maison. Elle nécessite une <strong>ligne dédiée</strong> tirée directement du tableau principal :
           </p>
           <ul style="margin-left: 20px; margin-bottom: 20px; display: flex; flex-direction: column; gap: 8px;">
-            <li><strong>Indice IP54 au minimum :</strong> Garantit une protection complète contre les infiltrations de poussière fine et les jets d'eau provenant de toutes directions.</li>
+            <li><strong>Le Câble d'Alimentation :</strong> Section minimale de <strong>10 mm²</strong> en cuivre pour une borne de 7,4 kW (monophasée) avec moins de 15 mètres de distance. Au-delà, une section de <strong>16 mm²</strong> est requise pour limiter les chutes de tension qui ralentiraient la charge.</li>
+            <li><strong>L'Interrupteur Différentiel dédié :</strong> Type <strong>F</strong> (anciennement A-EV) obligatoire, sensibilité 30 mA. Ce différentiel spécial est capable de détecter les courants de fuite à composante continue, spécifiques aux chargeurs de batteries de véhicules électriques.</li>
+            <li><strong>Le Disjoncteur Divisionnaire :</strong> Calibre 40A en monophasé pour une wallbox 32A, courbe C, protégeant la ligne contre les surcharges thermiques et les courts-circuits accidentels.</li>
+          </ul>
+
+          <h2>3. Le Choix de la Puissance de Charge</h2>
+          <p>
+            Le choix entre une borne de 7,4 kW, 11 kW ou 22 kW dépend de votre usage quotidien, du chargeur embarqué (OBC) de votre véhicule, et de votre installation électrique. Pour faire le bon choix en toute connaissance de cause, consultez notre <a href="/guides/wallbox-7kw-11kw-22kw-comparatif/" style="color: var(--secondary); font-weight: 700;">comparatif détaillé des puissances de wallbox 7kW vs 11kW vs 22kW</a>.
+          </p>
+          <p>
+            En résumé, pour 90 % des foyers du Nord, la <strong>wallbox 7,4 kW en monophasé</strong> est largement suffisante. Elle permet de recharger complètement une batterie standard de 60 kWh en une nuit (environ 7 à 8 heures). Pour connaître le budget détaillé de chaque option, rendez-vous sur notre <a href="/tarifs/" style="color: var(--secondary); font-weight: 700;">page tarifs</a>.
+          </p>
+
+          <h2>4. Le Délestage Dynamique avec Compteur Linky</h2>
+          <p>
+            Le principal risque technique lors de la charge rapide à 7,4 kW est la disjonction générale de votre compteur Linky (lorsque la voiture charge en même temps que le four, les plaques à induction et le chauffe-eau).
+          </p>
+          <p>
+            La solution : installer un module de <strong>délestage dynamique</strong>. Branché sur la sortie TIC (Télé-Information Client) de votre compteur Linky, il communique en temps réel la consommation totale de la maison à la borne, qui ajuste sa puissance instantanément pour ne jamais dépasser la puissance souscrite. Vous évitez ainsi de souscrire un abonnement surdimensionné (et donc trop cher).
+          </p>
+
+          <h2>5. Les Normes de Sécurité & Indices de Protection</h2>
+          <p>
+            Dans le Nord, où le gel, le brouillard et la pluie fine sont fréquents, la borne doit présenter des indices de résistance élevés si elle est placée à l'extérieur :
+          </p>
+          <ul style="margin-left: 20px; margin-bottom: 20px; display: flex; flex-direction: column; gap: 8px;">
+            <li><strong>Indice IP54 au minimum :</strong> Protection complète contre les infiltrations de poussière fine et les jets d'eau provenant de toutes directions. Les <a href="/guides/meilleures-wallbox-2026-comparatif/" style="color: var(--secondary); font-weight: 700;">meilleures wallbox 2026</a> comme la Hager Witty offrent un IP55/IK10.</li>
             <li><strong>Indice IK08 ou IK10 :</strong> Résistance mécanique aux chocs et actes de vandalisme accidentels.</li>
-            <li><strong>Obturateurs de sécurité (Prise type 2S) :</strong> En France, la norme NF C 15-100 impose l'utilisation de prises avec obturateurs de sécurité (le "S" de type 2S) sur les bornes non verrouillées dans les parkings ou garages.</li>
+            <li><strong>Obturateurs de sécurité (Prise type 2S) :</strong> La norme NF C 15-100 impose l'utilisation de prises avec obturateurs de sécurité sur les bornes non verrouillées dans les parkings ou garages.</li>
           </ul>
 
-          <h2>4. Les étapes d'un chantier d'installation standard</h2>
+          <h2>6. Les Étapes d'un Chantier d'Installation Standard</h2>
           <ol style="margin-left: 20px; margin-bottom: 20px; display: flex; flex-direction: column; gap: 10px;">
-            <li><strong>Audit et Visite technique :</strong> Vérification de l'état général de la prise de terre de la maison (résistance maximale de 100 ohms obligatoire) et de la vétusté du tableau principal.</li>
-            <li><strong>Pose et Fixation :</strong> Fixation murale de la wallbox ou installation sur un pied de borne rigide dans l'allée.</li>
+            <li><strong>Audit et Visite technique :</strong> Vérification de l'état de la prise de terre (résistance max. 100 ohms), du tableau principal et de la puissance disponible sur votre abonnement Enedis.</li>
+            <li><strong>Pose et Fixation :</strong> Fixation murale de la wallbox sur le mur du garage ou installation sur un pied de borne rigide dans l'allée.</li>
             <li><strong>Passage de câbles :</strong> Passage du câble d'alimentation 3G10mm² sous goulottes esthétiques ou dans une tranchée extérieure sous fourreau rouge avec grillage avertisseur.</li>
-            <li><strong>Raccordements &amp; Mise en service :</strong> Connexion des modules de sécurité dans le tableau, raccordement du câble de charge et premier test d'alimentation avec un contrôleur de charge simulé.</li>
+            <li><strong>Raccordements & Mise en service :</strong> Connexion des modules de sécurité dans le tableau, raccordement du câble de charge, premier test d'alimentation avec un contrôleur.</li>
+            <li><strong>Attestation IRVE :</strong> Remise d'une attestation de conformité IRVE indispensable pour débloquer votre <a href="/aides-advenir/" style="color: var(--secondary); font-weight: 700;">crédit d'impôt et vos aides financières</a>.</li>
           </ol>
+
+          <div style="background: var(--primary-light); border: 1.5px solid var(--border-color); padding: 25px; border-radius: var(--radius-md); margin-top: 40px;">
+            <h3 style="margin-top: 0; color: var(--primary); font-size: 17px; font-weight: 700; border-bottom: 2px solid var(--border-color); padding-bottom: 8px; margin-bottom: 15px;">📚 Pour aller plus loin</h3>
+            <ul style="list-style: none; padding-left: 0; display: flex; flex-direction: column; gap: 12px; font-size: 14px; margin-bottom: 0;">
+              <li>🔌 <a href="/guides/installateur-irve-nord-certification/" style="color: var(--secondary); font-weight: 700;">Installateur IRVE dans le Nord</a> — Certification, assurance et garanties à vérifier</li>
+              <li>⚡ <a href="/guides/wallbox-7kw-11kw-22kw-comparatif/" style="color: var(--secondary); font-weight: 700;">Wallbox 7kW vs 11kW vs 22kW</a> — Quelle puissance choisir ?</li>
+              <li>🔧 <a href="/guides/monophase-triphase-compteur-enedis-nord/" style="color: var(--secondary); font-weight: 700;">Monophasé ou Triphasé</a> — Adapter votre compteur Enedis</li>
+              <li>💰 <a href="/guides/prix-installation-borne-recharge-nord-2026/" style="color: var(--secondary); font-weight: 700;">Prix d'installation dans le Nord 2026</a> — Budget complet</li>
+              <li>❄️ <a href="/guides/recharge-vehicule-electrique-hiver-nord/" style="color: var(--secondary); font-weight: 700;">Recharge en hiver dans le 59</a> — Préserver l'autonomie par grand froid</li>
+            </ul>
+          </div>
         </div>
 
         <!-- Sidebar -->
@@ -81,7 +117,13 @@ const breadcrumbItems = [
 
           <div class="sidebar-widget">
             <h3>⚠️ Risque Sinistre</h3>
-            <p style="font-size: 13px;">Brancher une voiture sur une prise standard non renforcée pendant plus de 10 heures d'affilée présente un risque réel de surchauffe de la prise et de départ de feu. L'utilisation d'une ligne dédiée sécurisée est indispensable.</p>
+            <p style="font-size: 13px;">Brancher une voiture sur une prise standard non renforcée pendant plus de 10 heures d'affilée présente un risque réel de surchauffe et de départ de feu. L'utilisation d'une ligne dédiée sécurisée est indispensable.</p>
+          </div>
+
+          <div class="sidebar-widget">
+            <h3>📊 Combien ça coûte ?</h3>
+            <p style="font-size: 13px;">Le prix d'une installation complète dans le Nord varie de 1 200 € à 3 500 € TTC selon la puissance et la distance de câblage.</p>
+            <a href="/tarifs/" style="color: var(--secondary); font-weight: 700; font-size: 13px;">Voir la grille tarifaire →</a>
           </div>
         </aside>
 

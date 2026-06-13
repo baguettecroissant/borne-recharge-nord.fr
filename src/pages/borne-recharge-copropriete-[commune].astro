@@ -41,6 +41,7 @@ const breadcrumbItems = [
     pageUrl={Astro.url.href}
     pageTitle={title}
     pageDescription={description}
+    faqItems={content.faqItems}
     breadcrumbItems={breadcrumbItems}
     communeName={commune.nom}
     zipCode={commune.codePostal}
@@ -86,6 +87,34 @@ const breadcrumbItems = [
           <h3>🏡 Valorisation de votre appartement à {commune.nom}</h3>
           <p>{content.realEstateInsight}</p>
 
+          <h2>Modèle de lettre syndic pour droit à la prise à {commune.nom}</h2>
+          <p>Pour faire valoir votre droit à la prise, vous devez envoyer une notification formelle au syndic. Voici les éléments indispensables à faire figurer dans votre courrier recommandé (LRAR) :</p>
+          <div style="background: var(--primary-light); border: 1px dashed var(--accent); padding: 20px; border-radius: var(--radius-sm); font-family: monospace; font-size: 13px; color: var(--primary); margin: 20px 0;">
+            Objet : Demande d'installation d'une borne de recharge individuelle<br/>
+            Madame, Monsieur le Syndic,<br/><br/>
+            Conformément au Décret n° 2020-1720, je vous informe de mon intention de procéder à l'installation d'une solution de recharge pour véhicule électrique sur ma place de stationnement n°[Numéro] située au [Adresse de la résidence à {commune.nom}].<br/><br/>
+            Vous trouverez ci-joint le descriptif technique des travaux, les plans de raccordement électrique établis par l'électricien IRVE agréé, ainsi que le devis correspondant. Je vous sollicite pour l'inscription de cette question à l'ordre du jour de la prochaine assemblée générale.
+          </div>
+
+          <h2>Étapes de l'AG et du vote d'infrastructure collective</h2>
+          <p>La pose d'une borne ne nécessite pas l'autorisation de l'AG (c'est un droit à la prise individuel), mais l'AG doit en être notifiée et délibérer. En cas de projet d'infrastructure collective de recharge, les étapes sont :</p>
+          <ul style="padding-left: 20px; display: flex; flex-direction: column; gap: 8px;">
+            <li><strong>Étape 1 : Diagnostic technique</strong> — Notre installateur IRVE à {commune.nom} évalue la puissance disponible sur le TGBT des parties communes.</li>
+            <li><strong>Étape 2 : Présentation en AG</strong> — Présentation des devis collectifs d'opérateurs ou de solutions de colonne horizontale Enedis.</li>
+            <li><strong>Étape 3 : Vote de la convention</strong> — Vote de la convention de travaux avec l'opérateur choisi (souvent sans frais pour la copropriété si financement tiers).</li>
+            <li><strong>Étape 4 : Déploiement</strong> — Câblage des parties communes pour permettre le raccordement futur de chaque résident.</li>
+          </ul>
+
+          <h2>Schéma technique : raccordement TGBT en parking souterrain à {commune.nom}</h2>
+          <p>Pour une installation individuelle classique en parking collectif, le raccordement respecte le schéma suivant :</p>
+          <div style="background: var(--card-bg); border: 1.5px solid var(--border-color); border-radius: var(--radius-md); padding: 20px; margin: 20px 0; text-align: center;">
+            <p style="font-weight: 700; margin-top: 0; color: var(--primary);">🔌 Parcours du Raccordement Individuel en Copropriété :</p>
+            <code style="display: block; font-size: 13px; padding: 10px; background: var(--primary-light); color: var(--secondary); border-radius: var(--radius-sm); line-height: 1.6;">
+              [TGBT Parties Communes] ➔ [Disjoncteur Différentiel Type A-EV] ➔ [Sous-compteur MID] ➔ [Chemin de câble coupe-feu] ➔ [Borne Wallbox]
+            </code>
+            <p style="font-size: 12.5px; color: var(--text-muted); margin-bottom: 0; margin-top: 10px;">Le sous-compteur MID permet de mesurer précisément votre consommation pour une facturation transparente en accord avec le syndic.</p>
+          </div>
+
           <h2>Tarifs de raccordement en Copropriété à {commune.nom}</h2>
           <table class="data-table">
             <thead>
@@ -128,6 +157,37 @@ const breadcrumbItems = [
             ))}
           </div>
 
+          <!-- Resources and external links for Google EEAT -->
+          <div class="eeat-resources-box" style="background: var(--primary-light); border: 1.5px solid var(--border-color); padding: 25px; border-radius: var(--radius-md); margin-top: 40px;">
+            <h3 style="margin-top: 0; color: var(--primary); font-size: 17px; font-weight: 700; border-bottom: 2px solid var(--border-color); padding-bottom: 8px; margin-bottom: 15px;">🔗 Liens utiles &amp; Documents officiels pour {commune.nom}</h3>
+            <ul style="list-style: none; padding-left: 0; display: flex; flex-direction: column; gap: 12px; font-size: 14px; margin-bottom: 0;">
+              {content.externalLinks.map((link) => (
+                <li>
+                  <a href={link.url} target="_blank" rel="noopener noreferrer" style="color: var(--secondary); font-weight: 700; text-decoration: underline;">
+                    {link.label}
+                  </a>
+                  <p style="margin: 3px 0 0 0; font-size: 12.5px; color: var(--text-muted); line-height: 1.4;">{link.description}</p>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <!-- Local cluster linking -->
+          <div class="local-cluster-box" style="background: var(--card-bg); border: 1px solid var(--border-color); padding: 25px; border-radius: var(--radius-md); margin-top: 40px; box-shadow: var(--shadow-sm);">
+            <h4 style="margin-top: 0; margin-bottom: 15px; color: var(--primary); font-size: 15px; font-weight: 700;">🛠️ Prestations électriques à {commune.nom} (59) :</h4>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; font-size: 13.5px;">
+              <a href={`/installateur-borne-recharge-${commune.slug}/`} style="color: var(--secondary); font-weight: 700; text-decoration: underline;">
+                Installation Borne {commune.nom}
+              </a>
+              <a href={`/borne-recharge-copropriete-${commune.slug}/`} style="color: var(--secondary); font-weight: 700; text-decoration: underline;">
+                Recharge en Copropriété {commune.nom}
+              </a>
+              <a href={`/wallbox-${commune.slug}/`} style="color: var(--secondary); font-weight: 700; text-decoration: underline;">
+                Wallbox Rapide {commune.nom}
+              </a>
+            </div>
+          </div>
+
           <!-- Silo Links -->
           <div class="silo-linking-box" style="background: var(--card-bg); border: 1px solid var(--border-color); padding: 25px; border-radius: var(--radius-md); margin-top: 50px;">
             <h4 style="margin-top: 0; margin-bottom: 10px; color: var(--primary); font-size: 15px; font-weight: 700;">📍 Recharge en copropriété dans les communes voisines :</h4>
@@ -154,6 +214,20 @@ const breadcrumbItems = [
           <div class="sidebar-widget">
             <h3>🏢 Rôle du Syndic</h3>
             <p style="font-size: 13px;">Le syndic de copropriété ne peut pas s'opposer à votre demande de droit à la prise sans motif légitime et doit signer une convention de travaux avec l'électricien dans les 3 mois.</p>
+          </div>
+
+          <div class="sidebar-widget">
+            <h3>📚 Guides et astuces</h3>
+            <ul style="padding-left: 15px; font-size: 13px; color: var(--text-muted); display: flex; flex-direction: column; gap: 8px;">
+              {content.guideLinks.map((guide) => (
+                <li>
+                  <a href={guide.href} style="color: var(--primary); font-weight: 700;">
+                    {guide.label}
+                  </a>
+                  <p style="margin: 2px 0 0 0; font-size: 11.5px; color: var(--text-muted);">{guide.desc}</p>
+                </li>
+              ))}
+            </ul>
           </div>
         </aside>
 

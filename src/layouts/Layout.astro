@@ -37,7 +37,8 @@ const topFooterCommunes = communes.slice(0, 10);
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width" />
     <meta name="robots" content={robots} />
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⚡</text></svg>" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
     <title>{title}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={resolvedCanonical} />
@@ -81,9 +82,16 @@ const topFooterCommunes = communes.slice(0, 10);
           <a href="/guides/">Guides</a>
           <a href="/communes/">Villes (59)</a>
         </nav>
-        <a href="/devis/" class="contact-btn">
-          📋 Devis Gratuit
-        </a>
+        <div class="header-actions">
+          <a href="/devis/" class="contact-btn">
+            📋 Devis Gratuit
+          </a>
+          <button class="mobile-menu-toggle" aria-label="Ouvrir le menu" aria-expanded="false">
+            <span class="bar"></span>
+            <span class="bar"></span>
+            <span class="bar"></span>
+          </button>
+        </div>
       </div>
     </header>
 
@@ -139,6 +147,36 @@ const topFooterCommunes = communes.slice(0, 10);
     <ExitIntentPopup />
 
     <script>
+      // Mobile menu toggle
+      const menuToggle = document.querySelector('.mobile-menu-toggle');
+      const headerNav = document.querySelector('.header-nav');
+      
+      if (menuToggle && headerNav) {
+        menuToggle.addEventListener('click', () => {
+          const isActive = menuToggle.classList.toggle('active');
+          headerNav.classList.toggle('active');
+          menuToggle.setAttribute('aria-expanded', String(isActive));
+        });
+
+        // Close menu when clicking outside
+        document.addEventListener('click', (e) => {
+          const target = e.target as HTMLElement;
+          if (!menuToggle.contains(target) && !headerNav.contains(target)) {
+            menuToggle.classList.remove('active');
+            headerNav.classList.remove('active');
+            menuToggle.setAttribute('aria-expanded', 'false');
+          }
+        });
+
+        headerNav.querySelectorAll('a').forEach(link => {
+          link.addEventListener('click', () => {
+            menuToggle.classList.remove('active');
+            headerNav.classList.remove('active');
+            menuToggle.setAttribute('aria-expanded', 'false');
+          });
+        });
+      }
+
       // Smooth scroll to devis form if present, else navigate standardly
       document.querySelectorAll('a[href="/devis/"], a[href="#devis"], .contact-btn').forEach(btn => {
         btn.addEventListener('click', (e) => {
