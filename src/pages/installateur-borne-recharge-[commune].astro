@@ -1,0 +1,239 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Hero from '../components/Hero.astro';
+import Breadcrumb from '../components/Breadcrumb.astro';
+import CityMap from '../components/CityMap.astro';
+import SchemaMarkup from '../components/SchemaMarkup.astro';
+import communes from '../data/communes.json';
+import { generateCommuneContent, getDynamicPrices } from '../lib/contentEngine';
+import { getNearbyCommunes } from '../lib/geoLinks';
+import config from '../data/config.json';
+
+export async function getStaticPaths() {
+  return communes.map((commune) => ({
+    params: { commune: commune.slug },
+    props: { commune }
+  }));
+}
+
+const { commune } = Astro.props;
+const category = 'main';
+
+// Generate spun localized content
+const content = generateCommuneContent(commune, category);
+// Retrieve dynamic pricing factors for this commune
+const prices = getDynamicPrices(commune);
+// Find 3 geographically closest neighbor communes for linking
+const nearbyCommunes = getNearbyCommunes(commune.slug, communes, 3);
+
+const title = `Installateur Borne de Recharge à ${commune.nom} (${commune.codePostal}) — Électricien IRVE Nord`;
+const description = `Besoin d'installer une borne de recharge (Wallbox) à ${commune.nom} (${commune.codePostal}) ? Estimez vos aides 2026 (Crédit d'impôt, TVA) et comparez 3 devis d'électriciens IRVE.`;
+
+const breadcrumbItems = [
+  { label: "Accueil", href: "/" },
+  { label: "Villes (59)", href: "/communes/" },
+  { label: commune.nom, href: `/installateur-borne-recharge-${commune.slug}/` },
+  { label: "Installation Borne" }
+];
+---
+
+<Layout title={title} description={description}>
+  <SchemaMarkup
+    slot="head"
+    pageUrl={Astro.url.href}
+    pageTitle={title}
+    pageDescription={description}
+    breadcrumbItems={breadcrumbItems}
+    communeName={commune.nom}
+    zipCode={commune.codePostal}
+    cityName={commune.nom}
+  />
+
+  <Breadcrumb items={breadcrumbItems} />
+
+  <!-- Hero with background and inline lead capture -->
+  <Hero communeName={commune.nom} categoryName="Installation" />
+
+  <section class="static-page-section">
+    <div class="container">
+      <div class="two-column-layout">
+        
+        <!-- Main Content -->
+        <div class="static-main-content rich-text" style="background: var(--card-bg); padding: 40px; border-radius: var(--radius-md); box-shadow: var(--shadow-sm); border: 1px solid var(--border-color);">
+          <h1>Installation de Borne de Recharge à {commune.nom} : Guide Complet 2026</h1>
+          
+          <p>{content.introParagraph}</p>
+
+          <blockquote style="border-left: 4px solid var(--accent); background: var(--primary-light); padding: 15px 20px; margin: 25px 0; border-radius: var(--radius-sm);">
+            <strong>ℹ️ Contexte local &amp; Aides 2026 :</strong> {content.localContext}
+          </blockquote>
+
+          <h2>Pourquoi installer une Wallbox à {commune.nom} ({commune.codePostal}) ?</h2>
+          <p>{content.useCaseText}</p>
+          <p>{content.ecoText}</p>
+
+          <!-- Local stats and data insights for the commune -->
+          <div class="commune-stats-box" style="background: var(--primary-light); border: 1.5px solid var(--border-color); border-radius: var(--radius-md); padding: 25px; margin: 35px 0;">
+            <h3 style="margin-top: 0; color: var(--primary); font-size: 18px; border-bottom: 2px solid var(--border-color); padding-bottom: 8px; margin-bottom: 15px;">📊 Analyse de la recharge &amp; Statistiques locales ({commune.nom})</h3>
+            <ul style="list-style: none; padding-left: 0; display: flex; flex-direction: column; gap: 10px; font-size: 14.5px;">
+              <li>📍 <strong>Altitude moyenne :</strong> {commune.altitude} mètres (Zone climatique : {content.climateZoneLabel})</li>
+              <li>🏢 <strong>Intercommunalité :</strong> {commune.intercommunalite || 'Non renseignée'}</li>
+              <li>📍 <strong>Canton :</strong> {commune.canton || 'Non renseigné'}</li>
+              <li>🔢 <strong>Code INSEE :</strong> {commune.codeInsee}</li>
+              <li>🏙️ <strong>Parc de logements :</strong> {commune.logements ? commune.logements.toLocaleString('fr-FR') : 'Non renseigné'} habitations</li>
+              <li>🏠 <strong>Maisons individuelles :</strong> {commune.logementsMaison}% (idéal pour la pose d'une borne privée)</li>
+              <li>🚗 <strong>Véhicules électriques estimés :</strong> {commune.vehiculesElectriques} VE (Croissance annuelle : +{commune.croissanceVE}%)</li>
+              <li>⚡ <strong>Bornes publiques :</strong> {commune.bornesPubliques} points de recharge dans la commune</li>
+              <li>💰 <strong>Estimation des économies :</strong> {content.savingsEstimate}</li>
+            </ul>
+          </div>
+
+          <h3>📈 Focus Diagnostic &amp; Électricité à {commune.nom}</h3>
+          <p>{content.communeDataInsight}</p>
+          <p>{content.expertTip}</p>
+
+          <h3>🏡 Valorisation de votre bien immobilier à {commune.nom}</h3>
+          <p>{content.realEstateInsight}</p>
+
+          <h3>🏘️ Contexte Local de {commune.nom}</h3>
+          <p>{content.populationTierContent}</p>
+
+          <h2>Tarifs d'installation de Borne de Recharge à {commune.nom}</h2>
+          <p>{content.tableIntro}</p>
+
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Type d'Équipement / Puissance</th>
+                <th>Usage conseillé</th>
+                <th>Prix moyen posé TTC</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Prise Renforcée Green'Up (3.7 kW)</strong></td>
+                <td>Recharge lente sécurisée — Hybrides</td>
+                <td class="price">{prices.greenUp.min.toLocaleString('fr-FR')} € – {prices.greenUp.max.toLocaleString('fr-FR')} €</td>
+              </tr>
+              <tr>
+                <td><strong>Wallbox 7.4 kW (Monophasé)</strong></td>
+                <td>Standard maison — charge complète de nuit (7-8h)</td>
+                <td class="price">{prices.wallbox7kW.min.toLocaleString('fr-FR')} € – {prices.wallbox7kW.max.toLocaleString('fr-FR')} €</td>
+              </tr>
+              <tr>
+                <td><strong>Wallbox 11 kW (Triphasé)</strong></td>
+                <td>Semi-rapide — charge complète en 5h</td>
+                <td class="price">{prices.wallbox11kW.min.toLocaleString('fr-FR')} € – {prices.wallbox11kW.max.toLocaleString('fr-FR')} €</td>
+              </tr>
+              <tr>
+                <td><strong>Wallbox 22 kW (Triphasé)</strong></td>
+                <td>Rapide — charge complète en 2-3h</td>
+                <td class="price">{prices.wallbox22kW.min.toLocaleString('fr-FR')} € – {prices.wallbox22kW.max.toLocaleString('fr-FR')} €</td>
+              </tr>
+              <tr>
+                <td><strong>Mise à niveau Triphasé Enedis</strong></td>
+                <td>Adaptation du compteur Enedis par nos soins</td>
+                <td class="price">{prices.triUpgrade.min.toLocaleString('fr-FR')} € – {prices.triUpgrade.max.toLocaleString('fr-FR')} €</td>
+              </tr>
+            </tbody>
+          </table>
+          <p style="font-size: 12.5px; color: var(--text-muted); line-height: 1.4;">{content.pricesContext}</p>
+
+          <!-- Google Maps Iframe -->
+          <h2>Zone d'intervention de nos électriciens IRVE à {commune.nom}</h2>
+          <p>Nos professionnels locaux desservent l'ensemble de la commune de {commune.nom} et ses alentours. L'étude de conformité électrique de votre tableau et la visite technique à domicile sont gratuites.</p>
+          <CityMap cityName={commune.nom} zip={commune.codePostal} />
+
+          <!-- Accordion FAQ -->
+          <h2 style="margin-top: 45px;">Questions fréquentes sur la recharge à {commune.nom}</h2>
+          <div class="faq-accordion-container" style="display: flex; flex-direction: column; gap: 12px; margin-top: 20px;">
+            {content.faqItems.map((faq) => (
+              <details class="faq-details" style="background: var(--card-bg); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 8px 16px;">
+                <summary style="font-family: var(--font-heading); font-weight: 700; font-size: 15px; color: var(--primary); padding: 8px 0; cursor: pointer; outline: none; display: flex; justify-content: space-between; align-items: center;">
+                  {faq.question}
+                </summary>
+                <div class="faq-answer" style="padding: 8px 0; border-top: 1px solid var(--primary-light); margin-top: 4px; font-size: 14px; color: var(--text-muted);">
+                  <p>{faq.answer}</p>
+                </div>
+              </details>
+            ))}
+          </div>
+
+          <!-- Resources and external links for Google EEAT -->
+          <div class="eeat-resources-box" style="background: var(--primary-light); border: 1.5px solid var(--border-color); padding: 25px; border-radius: var(--radius-md); margin-top: 40px;">
+            <h3 style="margin-top: 0; color: var(--primary); font-size: 17px; font-weight: 700; border-bottom: 2px solid var(--border-color); padding-bottom: 8px; margin-bottom: 15px;">🔗 Liens utiles &amp; Documents officiels pour {commune.nom}</h3>
+            <ul style="list-style: none; padding-left: 0; display: flex; flex-direction: column; gap: 12px; font-size: 14px; margin-bottom: 0;">
+              {content.externalLinks.map((link) => (
+                <li>
+                  <a href={link.url} target="_blank" rel="noopener noreferrer" style="color: var(--secondary); font-weight: 700; text-decoration: underline;">
+                    {link.label}
+                  </a>
+                  <p style="margin: 3px 0 0 0; font-size: 12.5px; color: var(--text-muted); line-height: 1.4;">{link.description}</p>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <!-- Local cluster linking -->
+          <div class="local-cluster-box" style="background: var(--card-bg); border: 1px solid var(--border-color); padding: 25px; border-radius: var(--radius-md); margin-top: 40px; box-shadow: var(--shadow-sm);">
+            <h4 style="margin-top: 0; margin-bottom: 15px; color: var(--primary); font-size: 15px; font-weight: 700;">🛠️ Prestations électriques à {commune.nom} (59) :</h4>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; font-size: 13.5px;">
+              <a href={`/installateur-borne-recharge-${commune.slug}/`} style="color: var(--secondary); font-weight: 700; text-decoration: underline;">
+                Installation Borne {commune.nom}
+              </a>
+              <a href={`/borne-recharge-copropriete-${commune.slug}/`} style="color: var(--secondary); font-weight: 700; text-decoration: underline;">
+                Recharge en Copropriété {commune.nom}
+              </a>
+              <a href={`/wallbox-${commune.slug}/`} style="color: var(--secondary); font-weight: 700; text-decoration: underline;">
+                Wallbox Rapide {commune.nom}
+              </a>
+            </div>
+          </div>
+
+          <!-- Silo Linking Section -->
+          <div class="silo-linking-box" style="background: var(--card-bg); border: 1px solid var(--border-color); padding: 25px; border-radius: var(--radius-md); margin-top: 50px;">
+            <h4 style="margin-top: 0; margin-bottom: 10px; color: var(--primary); font-size: 15px; font-weight: 700;">📍 Électriciens IRVE dans les communes voisines :</h4>
+            <ul style="padding-left: 0; list-style: none; display: flex; flex-wrap: wrap; gap: 12px; font-size: 13.5px;">
+              {nearbyCommunes.map((nc) => (
+                <li>
+                  <a href={`/installateur-borne-recharge-${nc.slug}/`} style="color: var(--secondary); font-weight: 700; text-decoration: underline;">
+                    Installateur recharge {nc.nom} ({nc.codePostal})
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+
+        <!-- Sidebar -->
+        <aside class="static-sidebar">
+          <div class="sidebar-widget bg-green-gradient">
+            <h3>🧮 Calculez vos aides</h3>
+            <p>Découvrez le montant de votre crédit d'impôt et de vos subventions ADVENIR à {commune.nom}. Simulateur 100% gratuit.</p>
+            <a href="/devis/" class="sidebar-cta-gold">Estimer mes primes →</a>
+          </div>
+
+          <div class="sidebar-widget">
+            <h3>🛡️ Accompagnement Local</h3>
+            <p>Les conseillers de <strong>{content.localAgencyName}</strong> vous aident à valider l'éligibilité technique de votre tableau électrique avant l'achat.</p>
+          </div>
+
+          <div class="sidebar-widget">
+            <h3>📚 Guides et astuces</h3>
+            <ul style="padding-left: 15px; font-size: 13px; color: var(--text-muted); display: flex; flex-direction: column; gap: 8px;">
+              {content.guideLinks.map((guide) => (
+                <li>
+                  <a href={guide.href} style="color: var(--primary); font-weight: 700;">
+                    {guide.label}
+                  </a>
+                  <p style="margin: 2px 0 0 0; font-size: 11.5px; color: var(--text-muted);">{guide.desc}</p>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </aside>
+
+      </div>
+    </div>
+  </section>
+</Layout>

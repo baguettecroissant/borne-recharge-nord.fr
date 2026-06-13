@@ -1,0 +1,144 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import SchemaMarkup from '../../components/SchemaMarkup.astro';
+import Breadcrumb from '../../components/Breadcrumb.astro';
+import config from '../../data/config.json';
+import { getCollection, render } from 'astro:content';
+
+export async function getStaticPaths() {
+  const allGuides = await getCollection('guides');
+  return allGuides.map(guide => ({
+    params: { slug: guide.id },
+    props: { guide },
+  }));
+}
+
+const { guide } = Astro.props;
+const { Content } = await render(guide);
+
+const title = `${guide.data.title} | ${config.brandName}`;
+const description = guide.data.description;
+
+const breadcrumbItems = [
+  { label: "Accueil", href: "/" },
+  { label: "Guides", href: "/guides/" },
+  { label: guide.data.title }
+];
+---
+
+<Layout title={title} description={description}>
+  <SchemaMarkup
+    slot="head"
+    pageUrl={Astro.url.href}
+    pageTitle={title}
+    pageDescription={description}
+    breadcrumbItems={breadcrumbItems}
+  />
+
+  <Breadcrumb items={breadcrumbItems} />
+
+  <article class="static-page-section" style="background-color: var(--bg);">
+    <div class="container">
+      <div class="two-column-layout">
+        
+        <!-- Main Content -->
+        <div class="static-main-content rich-text" style="background: var(--card-bg); padding: 40px; border-radius: var(--radius-md); box-shadow: var(--shadow-sm); border: 1px solid var(--border-color);">
+          
+          <div style="margin-bottom: 25px;">
+            <span style="background: var(--primary); color: white; font-size: 12px; font-weight: 700; padding: 4px 12px; border-radius: 20px; font-family: var(--font-heading);">
+              {guide.data.category}
+            </span>
+            <h1 style="font-family: var(--font-heading); font-size: 34px; font-weight: 700; color: var(--primary); line-height: 1.25; margin: 15px 0 10px 0;">
+              {guide.data.title}
+            </h1>
+            <div style="display: flex; gap: 20px; font-size: 13.5px; color: var(--text-muted); border-bottom: 1px solid var(--border-color); padding-bottom: 20px;">
+              <span>📅 Publié le {guide.data.publishDate.toLocaleDateString('fr-FR', { year: 'numeric', month: 'long', day: 'numeric' })}</span>
+              <span>⏱️ Temps de lecture : {guide.data.readTime}</span>
+              <span>✍️ Par {guide.data.author}</span>
+            </div>
+          </div>
+
+          <div style="width: 100%; height: auto; max-height: 400px; border-radius: var(--radius-md); overflow: hidden; margin-bottom: 35px; border: 1px solid var(--border-color);">
+            <img src={guide.data.image} alt={guide.data.title} style="width: 100%; height: 100%; object-fit: cover;" />
+          </div>
+
+          <div class="markdown-body">
+            <Content />
+          </div>
+
+        </div>
+
+        <!-- Sidebar -->
+        <aside class="static-sidebar">
+          <div class="sidebar-widget bg-green-gradient">
+            <h3>🧮 Obtenez votre devis borne</h3>
+            <p>Estimez votre crédit d'impôt de 500 € et les primes ADVENIR de copropriété en 2 minutes.</p>
+            <a href="/devis/" class="sidebar-cta-gold">Demander mon estimation →</a>
+          </div>
+
+          <div class="sidebar-widget">
+            <h3>🔌 Qualification IRVE</h3>
+            <p>Pour des raisons de sécurité et pour conserver les garanties d'assurances, faites obligatoirement installer vos points de recharge par des installateurs qualifiés IRVE.</p>
+          </div>
+        </aside>
+
+      </div>
+    </div>
+  </article>
+</Layout>
+
+<style is:global>
+  .markdown-body h2 {
+    font-family: var(--font-heading);
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--primary);
+    margin-top: 40px;
+    margin-bottom: 15px;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 8px;
+  }
+  .markdown-body h3 {
+    font-family: var(--font-heading);
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--primary);
+    margin-top: 30px;
+    margin-bottom: 12px;
+  }
+  .markdown-body p {
+    font-size: 15.5px;
+    line-height: 1.65;
+    color: var(--text);
+    margin-bottom: 20px;
+  }
+  .markdown-body ul, .markdown-body ol {
+    margin-bottom: 25px;
+    padding-left: 20px;
+  }
+  .markdown-body li {
+    font-size: 15.5px;
+    line-height: 1.6;
+    color: var(--text);
+    margin-bottom: 8px;
+  }
+  .markdown-body table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 25px 0;
+    font-size: 14.5px;
+  }
+  .markdown-body th, .markdown-body td {
+    padding: 12px;
+    border: 1px solid var(--border-color);
+    text-align: left;
+  }
+  .markdown-body th {
+    background-color: var(--primary-light);
+    color: var(--primary);
+    font-weight: 700;
+  }
+  .markdown-body tr:nth-child(even) td {
+    background-color: #fafbfc;
+  }
+</style>

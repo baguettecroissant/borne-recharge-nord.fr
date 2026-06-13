@@ -1,0 +1,167 @@
+---
+import config from '../data/config.json';
+import '../styles/global.css';
+import communes from '../data/communes.json';
+import ExitIntentPopup from '../components/ExitIntentPopup.astro';
+
+interface Props {
+  title?: string;
+  description?: string;
+  canonicalUrl?: string;
+  robots?: string;
+}
+
+const { 
+  title = `${config.brandName} | Bornes de Recharge IRVE Nord (59)`, 
+  description = config.description,
+  canonicalUrl,
+  robots = 'index, follow'
+} = Astro.props;
+
+const siteUrl = `https://${config.domain}`;
+
+// Auto-generate canonical URL from current page if not explicitly passed
+let resolvedPathname = Astro.url.pathname;
+if (!resolvedPathname.endsWith('/')) {
+  resolvedPathname += '/';
+}
+const resolvedCanonical = canonicalUrl || `${siteUrl}${resolvedPathname}`;
+
+// Top 10 communes for footer popular list
+const topFooterCommunes = communes.slice(0, 10);
+---
+
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="robots" content={robots} />
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⚡</text></svg>" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={resolvedCanonical} />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:site_name" content={config.brandName} />
+    <meta property="og:url" content={resolvedCanonical} />
+    <meta property="og:locale" content="fr_FR" />
+    <meta property="og:image" content={`${siteUrl}/images/hero-borne-recharge-nord.png`} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={`${siteUrl}/images/hero-borne-recharge-nord.png`} />
+
+    <!-- Geo meta tags for local SEO -->
+    <meta name="geo.region" content="FR-59" />
+    <meta name="geo.placename" content={config.mainCity} />
+
+    <!-- Schema.org JSON-LD slot -->
+    <slot name="head" />
+  </head>
+  <body>
+    <!-- Header -->
+    <header>
+      <div class="container header-inner">
+        <a href="/" class="logo">
+          <span>⚡</span> {config.brandName}
+        </a>
+        <nav class="header-nav" aria-label="Navigation principale">
+          <a href="/">Accueil</a>
+          <a href="/tarifs/">🧮 Tarifs</a>
+          <a href="/aides-advenir/">Aides ADVENIR</a>
+          <a href="/guide-installation/">Guide Technique</a>
+          <a href="/guides/">Guides</a>
+          <a href="/communes/">Villes (59)</a>
+        </nav>
+        <a href="/devis/" class="contact-btn">
+          📋 Devis Gratuit
+        </a>
+      </div>
+    </header>
+
+    <!-- Main Content Slot -->
+    <main>
+      <slot />
+    </main>
+
+    <!-- Footer -->
+    <footer>
+      <div class="container footer-grid-enriched">
+        <div class="footer-brand">
+          <h3>⚡ {config.brandName}</h3>
+          <p>Votre partenaire local de confiance pour l'étude et l'installation de <a href="/guide-installation/" style="color: var(--accent); font-weight: bold;">bornes de recharge (Wallbox)</a> et prises renforcées dans le département du {config.department} ({config.departmentCode}). Électriciens qualifiés IRVE. Obtenez 3 devis gratuits et optimisez vos aides d'État 2026.</p>
+        </div>
+        <div class="footer-links">
+          <h4>Prestations &amp; Tarifs</h4>
+          <ul>
+            <li><a href="/tarifs/" style="font-weight: 700; color: var(--accent);">🛠️ Tarifs Installation 2026</a></li>
+            <li><a href="/aides-advenir/">Aides ADVENIR 2026</a></li>
+            <li><a href="/guide-installation/">Guide d'installation Wallbox</a></li>
+            <li><a href="/guides/">Guides &amp; Conseils pratiques</a></li>
+            <li><a href="/communes/">Toutes les communes (59)</a></li>
+          </ul>
+        </div>
+        <div class="footer-links">
+          <h4>Recharge Ville</h4>
+          <ul>
+            <li><a href={`/installateur-borne-recharge-${config.mainCity.toLowerCase()}/`}>🔌 Borne de recharge {config.mainCity}</a></li>
+            <li><a href={`/borne-recharge-copropriete-${config.mainCity.toLowerCase()}/`}>🏢 Copropriété {config.mainCity}</a></li>
+            <li><a href={`/wallbox-${config.mainCity.toLowerCase()}/`}>⚡ Wallbox {config.mainCity}</a></li>
+          </ul>
+        </div>
+        <div class="footer-links">
+          <h4>Villes populaires (59)</h4>
+          <ul>
+            {topFooterCommunes.map((c) => (
+              <li><a href={`/installateur-borne-recharge-${c.slug}/`}>{c.nom}</a></li>
+            ))}
+          </ul>
+        </div>
+      </div>
+      <div class="container footer-bottom">
+        <p>&copy; {new Date().getFullYear()} {config.brandName}. Tous droits réservés.</p>
+        <p>
+          <a href="/mentions-legales/">Mentions Légales</a> | 
+          <a href="/politique-confidentialite/">Confidentialité (RGPD)</a>
+        </p>
+      </div>
+    </footer>
+
+    <!-- Exit Intent Popup -->
+    <ExitIntentPopup />
+
+    <script>
+      // Smooth scroll to devis form if present, else navigate standardly
+      document.querySelectorAll('a[href="/devis/"], a[href="#devis"], .contact-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          const targetForm = document.getElementById('devis');
+          if (targetForm) {
+            e.preventDefault();
+            targetForm.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            targetForm.classList.add('pulse-form');
+            setTimeout(() => {
+              targetForm.classList.remove('pulse-form');
+            }, 3000);
+
+            const firstBox = targetForm.querySelector('.option-box') as HTMLElement;
+            if (firstBox) {
+              firstBox.focus();
+              firstBox.style.outline = '3px solid var(--accent)';
+              setTimeout(() => {
+                if (firstBox) firstBox.style.outline = '';
+              }, 3000);
+            }
+          }
+        });
+      });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,168 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Hero from '../components/Hero.astro';
+import Breadcrumb from '../components/Breadcrumb.astro';
+import CityMap from '../components/CityMap.astro';
+import SchemaMarkup from '../components/SchemaMarkup.astro';
+import communes from '../data/communes.json';
+import { generateCommuneContent, getDynamicPrices } from '../lib/contentEngine';
+import { getNearbyCommunes } from '../lib/geoLinks';
+import config from '../data/config.json';
+
+export async function getStaticPaths() {
+  return communes.map((commune) => ({
+    params: { commune: commune.slug },
+    props: { commune }
+  }));
+}
+
+const { commune } = Astro.props;
+const category = 'wallbox';
+
+// Generate spun localized content
+const content = generateCommuneContent(commune, category);
+const prices = getDynamicPrices(commune);
+const nearbyCommunes = getNearbyCommunes(commune.slug, communes, 3);
+
+const title = `Installation de Wallbox à ${commune.nom} (${commune.codePostal}) — Borne de recharge rapide`;
+const description = `Pose de Wallbox rapide (7.4 kW à 22 kW) à ${commune.nom} (${commune.codePostal}) par un électricien IRVE qualifié. Devis gratuits sous 48h.`;
+
+const breadcrumbItems = [
+  { label: "Accueil", href: "/" },
+  { label: "Villes (59)", href: "/communes/" },
+  { label: commune.nom, href: `/installateur-borne-recharge-${commune.slug}/` },
+  { label: "Borne Wallbox" }
+];
+---
+
+<Layout title={title} description={description}>
+  <SchemaMarkup
+    slot="head"
+    pageUrl={Astro.url.href}
+    pageTitle={title}
+    pageDescription={description}
+    breadcrumbItems={breadcrumbItems}
+    communeName={commune.nom}
+    zipCode={commune.codePostal}
+    cityName={commune.nom}
+  />
+
+  <Breadcrumb items={breadcrumbItems} />
+
+  <Hero communeName={commune.nom} categoryName="Wallbox" />
+
+  <section class="static-page-section">
+    <div class="container">
+      <div class="two-column-layout">
+        
+        <!-- Main Content -->
+        <div class="static-main-content rich-text" style="background: var(--card-bg); padding: 40px; border-radius: var(--radius-md); box-shadow: var(--shadow-sm); border: 1px solid var(--border-color);">
+          <h1>Installation de Wallbox à {commune.nom} : Vitesse &amp; Performance</h1>
+          
+          <p>{content.introParagraph}</p>
+
+          <blockquote style="border-left: 4px solid var(--accent); background: var(--primary-light); padding: 15px 20px; margin: 25px 0; border-radius: var(--radius-sm);">
+            <strong>ℹ️ Performance de recharge Linky :</strong> {content.localContext}
+          </blockquote>
+
+          <h2>Pourquoi opter pour une Wallbox rapide 7.4 kW ou 22 kW à {commune.nom} ?</h2>
+          <p>{content.useCaseText}</p>
+          <p>{content.ecoText}</p>
+
+          <div class="commune-stats-box" style="background: var(--primary-light); border: 1.5px solid var(--border-color); border-radius: var(--radius-md); padding: 25px; margin: 35px 0;">
+            <h3 style="margin-top: 0; color: var(--primary); font-size: 18px; border-bottom: 2px solid var(--border-color); padding-bottom: 8px; margin-bottom: 15px;">📊 Chiffres clés de la Wallbox ({commune.nom})</h3>
+            <ul style="list-style: none; padding-left: 0; display: flex; flex-direction: column; gap: 10px; font-size: 14.5px;">
+              <li>🚀 <strong>Vitesse de recharge :</strong> Récupérez jusqu'à 50 km d'autonomie par heure (Wallbox 7.4 kW)</li>
+              <li>⚡ <strong>Compatibilité Linky :</strong> Délestage automatique requis pour éviter les surcharges</li>
+              <li>💰 <strong>Avantage financier à {commune.nom} :</strong> crédit d'impôt de 500 € déductible</li>
+              <li>⚙️ <strong>Certification IRVE :</strong> Obligatoire pour la validation de vos garanties constructeur</li>
+            </ul>
+          </div>
+
+          <h3>📈 Intégration Linky &amp; Heures creuses dans le Nord</h3>
+          <p>{content.communeDataInsight}</p>
+          <p>{content.expertTip}</p>
+
+          <h3>🏡 Impact sur la valeur verte de votre maison à {commune.nom}</h3>
+          <p>{content.realEstateInsight}</p>
+
+          <h2>Tarifs comparatifs de pose de Wallbox à {commune.nom}</h2>
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Modèle Wallbox / Puissance</th>
+                <th>Temps de charge type (Batterie 60 kWh)</th>
+                <th>Prix moyen posé TTC</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Wallbox 7.4 kW Monophasé</strong></td>
+                <td>Environ 7 heures — compatible toute maison</td>
+                <td class="price">{prices.wallbox7kW.min.toLocaleString('fr-FR')} € – {prices.wallbox7kW.max.toLocaleString('fr-FR')} €</td>
+              </tr>
+              <tr>
+                <td><strong>Wallbox 11 kW Triphasé</strong></td>
+                <td>Environ 5 heures — nécessite réseau triphasé</td>
+                <td class="price">{prices.wallbox11kW.min.toLocaleString('fr-FR')} € – {prices.wallbox11kW.max.toLocaleString('fr-FR')} €</td>
+              </tr>
+              <tr>
+                <td><strong>Wallbox 22 kW Triphasé</strong></td>
+                <td>Environ 2.5 heures — puissance maximale AC</td>
+                <td class="price">{prices.wallbox22kW.min.toLocaleString('fr-FR')} € – {prices.wallbox22kW.max.toLocaleString('fr-FR')} €</td>
+              </tr>
+            </tbody>
+          </table>
+          <p style="font-size: 12.5px; color: var(--text-muted); line-height: 1.4;">{content.pricesContext}</p>
+
+          <h2>Trouver un poseur de Wallbox agréé à {commune.nom}</h2>
+          <CityMap cityName={commune.nom} zip={commune.codePostal} />
+
+          <!-- Accordion FAQ -->
+          <h2 style="margin-top: 45px;">Questions fréquentes sur la Wallbox à {commune.nom}</h2>
+          <div class="faq-accordion-container" style="display: flex; flex-direction: column; gap: 12px; margin-top: 20px;">
+            {content.faqItems.map((faq) => (
+              <details class="faq-details" style="background: var(--card-bg); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 8px 16px;">
+                <summary style="font-family: var(--font-heading); font-weight: 700; font-size: 15px; color: var(--primary); padding: 8px 0; cursor: pointer; outline: none; display: flex; justify-content: space-between; align-items: center;">
+                  {faq.question}
+                </summary>
+                <div class="faq-answer" style="padding: 8px 0; border-top: 1px solid var(--primary-light); margin-top: 4px; font-size: 14px; color: var(--text-muted);">
+                  <p>{faq.answer}</p>
+                </div>
+              </details>
+            ))}
+          </div>
+
+          <!-- Silo Links -->
+          <div class="silo-linking-box" style="background: var(--card-bg); border: 1px solid var(--border-color); padding: 25px; border-radius: var(--radius-md); margin-top: 50px;">
+            <h4 style="margin-top: 0; margin-bottom: 10px; color: var(--primary); font-size: 15px; font-weight: 700;">📍 Installateurs de Wallbox dans les communes voisines :</h4>
+            <ul style="padding-left: 0; list-style: none; display: flex; flex-wrap: wrap; gap: 12px; font-size: 13.5px;">
+              {nearbyCommunes.map((nc) => (
+                <li>
+                  <a href={`/wallbox-${nc.slug}/`} style="color: var(--secondary); font-weight: 700; text-decoration: underline;">
+                    Wallbox {nc.nom} ({nc.codePostal})
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+
+        <!-- Sidebar -->
+        <aside class="static-sidebar">
+          <div class="sidebar-widget bg-green-gradient">
+            <h3>🧮 Obtenez 3 devis Wallbox</h3>
+            <p>Notre réseau d'électriciens qualifiés IRVE à {commune.nom} vous envoie jusqu'à 3 propositions tarifaires gratuites sous 48 heures.</p>
+            <a href="/devis/" class="sidebar-cta-gold">Demander mes devis →</a>
+          </div>
+
+          <div class="sidebar-widget">
+            <h3>🔌 Les marques partenaires</h3>
+            <p style="font-size: 13px;">Nous installons les plus grandes marques de wallbox : Schneider Electric, Legrand, Hager, Wallbox (Pulsar), Easee et EVBox.</p>
+          </div>
+        </aside>
+
+      </div>
+    </div>
+  </section>
+</Layout>

@@ -1,0 +1,99 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Breadcrumb from '../components/Breadcrumb.astro';
+import SchemaMarkup from '../components/SchemaMarkup.astro';
+import config from '../data/config.json';
+
+const title = `Guide Technique Installation Borne de Recharge Domicile`;
+const description = `Toutes les étapes techniques pour réussir l'installation de votre wallbox à domicile dans le Nord : câblage, disjoncteur, Linky et normes de sécurité.`;
+
+const breadcrumbItems = [
+  { label: "Accueil", href: "/" },
+  { label: "Guide Technique Installation" }
+];
+---
+
+<Layout title={title} description={description}>
+  <SchemaMarkup 
+    slot="head" 
+    pageUrl={Astro.url.href}
+    pageTitle={title}
+    pageDescription={description}
+    breadcrumbItems={breadcrumbItems}
+  />
+
+  <Breadcrumb items={breadcrumbItems} />
+
+  <section class="static-page-section" style="padding: 50px 0 80px; background-color: var(--bg);">
+    <div class="container">
+      <div class="two-column-layout">
+        
+        <!-- Main Content -->
+        <div class="static-main-content rich-text" style="background: var(--card-bg); padding: 40px; border-radius: var(--radius-md); box-shadow: var(--shadow-sm); border: 1px solid var(--border-color);">
+          <h1 style="font-family: var(--font-heading); font-size: 32px; font-weight: 700; color: var(--primary); margin-bottom: 20px;">Guide Technique : Installer une Wallbox chez soi</h1>
+          
+          <p>
+            L'installation d'une infrastructure de recharge pour véhicule électrique (IRVE) requiert des compétences en électricité industrielle et domestique. Pour garantir la sécurité de votre foyer dans le Nord et la longévité de votre batterie de voiture, voici les étapes techniques et normes réglementaires de câblage.
+          </p>
+
+          <h2>1. Le Schéma de Câblage Électrique IRVE</h2>
+          <p>
+            Une borne de recharge ne se branche jamais directement sur un circuit électrique existant de la maison. Elle requiert une ligne dédiée tirée directement du tableau électrique principal :
+          </p>
+          <ul style="margin-left: 20px; margin-bottom: 20px; display: flex; flex-direction: column; gap: 8px;">
+            <li><strong>Le Câble Électrique :</strong> Section minimale de <strong>10 mm²</strong> (en cuivre) pour une borne de 7.4 kW (monophasée) avec moins de 15 mètres de distance. Pour les distances plus grandes, une section de 16 mm² est requise pour limiter les chutes de tension.</li>
+            <li><strong>L'Interrupteur Différentiel dédié :</strong> Type A ou type B obligatoire (30 mA), capable de détecter les courants de fuite à composante continue (spécifiques aux batteries de VE).</li>
+            <li><strong>Le Disjoncteur Divisionnaire :</strong> Calibre 40A en monophasé pour une wallbox 32A, courbe C, protégeant la ligne contre les surcharges thermiques et les courts-circuits.</li>
+          </ul>
+
+          <h2>2. Le Délestage Dynamique avec Compteur Linky</h2>
+          <p>
+            Le principal risque technique lors de la charge rapide à 7.4 kW à domicile est la disjonction générale de votre compteur Enedis (lorsque vous allumez les plaques à induction, le four, et que la voiture charge simultanément). 
+            La solution consiste à installer un <strong>délestage dynamique</strong>. Branché sur la sortie TIC (Télé-Information Client) de votre compteur Linky, il indique en temps réel la consommation de la maison à la borne, qui adapte sa puissance instantanément pour ne jamais dépasser la puissance souscrite de votre abonnement.
+          </p>
+
+          <h2>3. Les Normes de Sécurité &amp; Indices de Protection</h2>
+          <p>
+            Dans le Nord, où le gel, le brouillard et la pluie fine sont fréquents, la borne de recharge doit présenter des indices de résistance élevés si elle est placée à l'extérieur :
+          </p>
+          <ul style="margin-left: 20px; margin-bottom: 20px; display: flex; flex-direction: column; gap: 8px;">
+            <li><strong>Indice IP54 au minimum :</strong> Garantit une protection complète contre les infiltrations de poussière fine et les jets d'eau provenant de toutes directions.</li>
+            <li><strong>Indice IK08 ou IK10 :</strong> Résistance mécanique aux chocs et actes de vandalisme accidentels.</li>
+            <li><strong>Obturateurs de sécurité (Prise type 2S) :</strong> En France, la norme NF C 15-100 impose l'utilisation de prises avec obturateurs de sécurité (le "S" de type 2S) sur les bornes non verrouillées dans les parkings ou garages.</li>
+          </ul>
+
+          <h2>4. Les étapes d'un chantier d'installation standard</h2>
+          <ol style="margin-left: 20px; margin-bottom: 20px; display: flex; flex-direction: column; gap: 10px;">
+            <li><strong>Audit et Visite technique :</strong> Vérification de l'état général de la prise de terre de la maison (résistance maximale de 100 ohms obligatoire) et de la vétusté du tableau principal.</li>
+            <li><strong>Pose et Fixation :</strong> Fixation murale de la wallbox ou installation sur un pied de borne rigide dans l'allée.</li>
+            <li><strong>Passage de câbles :</strong> Passage du câble d'alimentation 3G10mm² sous goulottes esthétiques ou dans une tranchée extérieure sous fourreau rouge avec grillage avertisseur.</li>
+            <li><strong>Raccordements &amp; Mise en service :</strong> Connexion des modules de sécurité dans le tableau, raccordement du câble de charge et premier test d'alimentation avec un contrôleur de charge simulé.</li>
+          </ol>
+        </div>
+
+        <!-- Sidebar -->
+        <aside class="static-sidebar">
+          <div class="sidebar-widget bg-green-gradient">
+            <h3>🧮 Devis électricien IRVE</h3>
+            <p>Comparez gratuitement 3 électriciens qualifiés IRVE de votre secteur dans le Nord. Devis gratuit sans aucun engagement.</p>
+            <a href="/devis/" class="sidebar-cta-gold">Demander mon étude →</a>
+          </div>
+
+          <div class="sidebar-widget">
+            <h3>⚠️ Risque Sinistre</h3>
+            <p style="font-size: 13px;">Brancher une voiture sur une prise standard non renforcée pendant plus de 10 heures d'affilée présente un risque réel de surchauffe de la prise et de départ de feu. L'utilisation d'une ligne dédiée sécurisée est indispensable.</p>
+          </div>
+        </aside>
+
+      </div>
+    </div>
+  </section>
+</Layout>
+
+<style>
+  @media (max-width: 992px) {
+    .two-column-layout {
+      grid-template-columns: 1fr !important;
+    }
+  }
+</style>

@@ -1,0 +1,82 @@
+---
+import Layout from '../layouts/Layout.astro';
+import SchemaMarkup from '../components/SchemaMarkup.astro';
+import config from '../data/config.json';
+import communes from '../data/communes.json';
+import Breadcrumb from '../components/Breadcrumb.astro';
+
+const title = `Trouver un électricien IRVE par Ville dans le Nord (59) | ${config.brandName}`;
+const description = `Accédez aux pages d'installation de borne de recharge de ${communes.length} communes du Nord. Simulez vos subventions et comparez 3 devis d'électriciens qualifiés IRVE.`;
+
+const breadcrumbItems = [
+  { label: "Accueil", href: "/" },
+  { label: "Villes du Nord (59)" }
+];
+---
+
+<style>
+  .cities-grid-full {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 12px;
+    margin-top: 30px;
+  }
+  .city-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    padding: 14px 18px;
+    font-weight: 600;
+    font-size: 14.5px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: var(--transition);
+    color: var(--primary);
+  }
+  .city-card:hover {
+    border-color: var(--accent);
+    background: var(--primary-light);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-sm);
+  }
+  .city-card span:first-child {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+</style>
+
+<Layout title={title} description={description}>
+  <SchemaMarkup
+    slot="head"
+    pageUrl={Astro.url.href}
+    pageTitle={title}
+    pageDescription={description}
+    breadcrumbItems={breadcrumbItems}
+  />
+
+  <Breadcrumb items={breadcrumbItems} />
+
+  <section style="padding: 50px 0 80px; background-color: var(--bg);">
+    <div class="container">
+      <div style="text-align: center; margin-bottom: 45px;">
+        <h1 style="font-family: var(--font-heading); font-size: 34px; font-weight: 700; color: var(--primary); line-height: 1.2; margin-bottom: 12px;">
+          Installateurs de Bornes de Recharge dans le Nord (59)
+        </h1>
+        <p style="font-size: 16px; color: var(--text-muted); max-width: 650px; margin: 0 auto; line-height: 1.5;">
+          Sélectionnez votre commune parmi les {communes.length} villes du département pour estimer vos subventions (TVA 5,5%, Crédit d'impôt 500 €, ADVENIR) et comparer les devis de poseurs qualifiés IRVE.
+        </p>
+      </div>
+
+      <div class="cities-grid-full">
+        {communes.map((c) => (
+          <a href={`/installateur-borne-recharge-${c.slug}/`} class="city-card">
+            <span>{c.nom} <span style="font-size: 11px; font-weight: normal; color: var(--text-muted);">({c.codePostal})</span></span>
+            <span style="color: var(--accent);">&rarr;</span>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+</Layout>

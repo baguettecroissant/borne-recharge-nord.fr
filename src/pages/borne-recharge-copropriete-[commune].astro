@@ -1,0 +1,163 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Hero from '../components/Hero.astro';
+import Breadcrumb from '../components/Breadcrumb.astro';
+import CityMap from '../components/CityMap.astro';
+import SchemaMarkup from '../components/SchemaMarkup.astro';
+import communes from '../data/communes.json';
+import { generateCommuneContent, getDynamicPrices } from '../lib/contentEngine';
+import { getNearbyCommunes } from '../lib/geoLinks';
+import config from '../data/config.json';
+
+export async function getStaticPaths() {
+  return communes.map((commune) => ({
+    params: { commune: commune.slug },
+    props: { commune }
+  }));
+}
+
+const { commune } = Astro.props;
+const category = 'copropriete';
+
+// Generate spun localized content
+const content = generateCommuneContent(commune, category);
+const prices = getDynamicPrices(commune);
+const nearbyCommunes = getNearbyCommunes(commune.slug, communes, 3);
+
+const title = `Borne de Recharge en Copropriété à ${commune.nom} (${commune.codePostal}) — Droit à la prise`;
+const description = `Comment installer une borne de recharge de voiture en copropriété à ${commune.nom} (${commune.codePostal}) ? Droit à la prise, AG et prime ADVENIR.`;
+
+const breadcrumbItems = [
+  { label: "Accueil", href: "/" },
+  { label: "Villes (59)", href: "/communes/" },
+  { label: commune.nom, href: `/installateur-borne-recharge-${commune.slug}/` },
+  { label: "Recharge en Copropriété" }
+];
+---
+
+<Layout title={title} description={description}>
+  <SchemaMarkup
+    slot="head"
+    pageUrl={Astro.url.href}
+    pageTitle={title}
+    pageDescription={description}
+    breadcrumbItems={breadcrumbItems}
+    communeName={commune.nom}
+    zipCode={commune.codePostal}
+    cityName={commune.nom}
+  />
+
+  <Breadcrumb items={breadcrumbItems} />
+
+  <Hero communeName={commune.nom} categoryName="Copropriété" />
+
+  <section class="static-page-section">
+    <div class="container">
+      <div class="two-column-layout">
+        
+        <!-- Main Content -->
+        <div class="static-main-content rich-text" style="background: var(--card-bg); padding: 40px; border-radius: var(--radius-md); box-shadow: var(--shadow-sm); border: 1px solid var(--border-color);">
+          <h1>Installation de Borne en Copropriété à {commune.nom}</h1>
+          
+          <p>{content.introParagraph}</p>
+
+          <blockquote style="border-left: 4px solid var(--accent); background: var(--primary-light); padding: 15px 20px; margin: 25px 0; border-radius: var(--radius-sm);">
+            <strong>ℹ️ Droit à la prise &amp; Copropriété :</strong> {content.localContext}
+          </blockquote>
+
+          <h2>Comment faire valoir votre Droit à la Prise à {commune.nom} ?</h2>
+          <p>{content.useCaseText}</p>
+          <p>{content.ecoText}</p>
+
+          <div class="commune-stats-box" style="background: var(--primary-light); border: 1.5px solid var(--border-color); border-radius: var(--radius-md); padding: 25px; margin: 35px 0;">
+            <h3 style="margin-top: 0; color: var(--primary); font-size: 18px; border-bottom: 2px solid var(--border-color); padding-bottom: 8px; margin-bottom: 15px;">📊 Statistiques immobilières &amp; recharge ({commune.nom})</h3>
+            <ul style="list-style: none; padding-left: 0; display: flex; flex-direction: column; gap: 10px; font-size: 14.5px;">
+              <li>🏢 <strong>Copropriété à {commune.nom} :</strong> environ {commune.logements ? Math.round(commune.logements * (1 - (commune.logementsMaison/100))).toLocaleString('fr-FR') : 'Non renseigné'} appartements</li>
+              <li>🚗 <strong>Besoin de recharge collectif :</strong> Croissance du parc VE estimée à +{commune.croissanceVE}% par an</li>
+              <li>💰 <strong>Prime ADVENIR Copropriété :</strong> Jusqu'à 960 € remboursés directement</li>
+              <li>⚡ <strong>Compteur parties communes Enedis :</strong> Validation technique obligatoire par notre artisan IRVE</li>
+            </ul>
+          </div>
+
+          <h3>📈 Éligibilité ADVENIR &amp; Raccordement Linky à {commune.nom}</h3>
+          <p>{content.communeDataInsight}</p>
+          <p>{content.expertTip}</p>
+
+          <h3>🏡 Valorisation de votre appartement à {commune.nom}</h3>
+          <p>{content.realEstateInsight}</p>
+
+          <h2>Tarifs de raccordement en Copropriété à {commune.nom}</h2>
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Type d'Infrastructure</th>
+                <th>Détails techniques</th>
+                <th>Prix moyen TTC (brut)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Borne individuelle sur parties communes</strong></td>
+                <td>Raccordement au tableau général basse tension (TGBT) de la résidence + sous-compteur MID</td>
+                <td class="price">{prices.copro.min.toLocaleString('fr-FR')} € – {prices.copro.max.toLocaleString('fr-FR')} €</td>
+              </tr>
+              <tr>
+                <td><strong>Abonnement individuel Enedis</strong></td>
+                <td>Création d'un point de livraison dédié (Linky individuel sur parking commun)</td>
+                <td class="price">{prices.triUpgrade.min.toLocaleString('fr-FR')} € – {prices.triUpgrade.max.toLocaleString('fr-FR')} €</td>
+              </tr>
+            </tbody>
+          </table>
+          <p style="font-size: 12.5px; color: var(--text-muted); line-height: 1.4;">{content.pricesContext}</p>
+
+          <h2>Zone d'intervention en résidence collective à {commune.nom}</h2>
+          <CityMap cityName={commune.nom} zip={commune.codePostal} />
+
+          <!-- Accordion FAQ -->
+          <h2 style="margin-top: 45px;">Questions fréquentes sur la copropriété à {commune.nom}</h2>
+          <div class="faq-accordion-container" style="display: flex; flex-direction: column; gap: 12px; margin-top: 20px;">
+            {content.faqItems.map((faq) => (
+              <details class="faq-details" style="background: var(--card-bg); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 8px 16px;">
+                <summary style="font-family: var(--font-heading); font-weight: 700; font-size: 15px; color: var(--primary); padding: 8px 0; cursor: pointer; outline: none; display: flex; justify-content: space-between; align-items: center;">
+                  {faq.question}
+                </summary>
+                <div class="faq-answer" style="padding: 8px 0; border-top: 1px solid var(--primary-light); margin-top: 4px; font-size: 14px; color: var(--text-muted);">
+                  <p>{faq.answer}</p>
+                </div>
+              </details>
+            ))}
+          </div>
+
+          <!-- Silo Links -->
+          <div class="silo-linking-box" style="background: var(--card-bg); border: 1px solid var(--border-color); padding: 25px; border-radius: var(--radius-md); margin-top: 50px;">
+            <h4 style="margin-top: 0; margin-bottom: 10px; color: var(--primary); font-size: 15px; font-weight: 700;">📍 Recharge en copropriété dans les communes voisines :</h4>
+            <ul style="padding-left: 0; list-style: none; display: flex; flex-wrap: wrap; gap: 12px; font-size: 13.5px;">
+              {nearbyCommunes.map((nc) => (
+                <li>
+                  <a href={`/borne-recharge-copropriete-${nc.slug}/`} style="color: var(--secondary); font-weight: 700; text-decoration: underline;">
+                    Borne copropriété {nc.nom} ({nc.codePostal})
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+
+        <!-- Sidebar -->
+        <aside class="static-sidebar">
+          <div class="sidebar-widget bg-green-gradient">
+            <h3>🧮 Simuler mes aides ADVENIR</h3>
+            <p>Jusqu'à 50% de financement (limité à 960 €) pour l'installation d'une borne individuelle à {commune.nom}.</p>
+            <a href="/devis/" class="sidebar-cta-gold">Demander mon dossier →</a>
+          </div>
+
+          <div class="sidebar-widget">
+            <h3>🏢 Rôle du Syndic</h3>
+            <p style="font-size: 13px;">Le syndic de copropriété ne peut pas s'opposer à votre demande de droit à la prise sans motif légitime et doit signer une convention de travaux avec l'électricien dans les 3 mois.</p>
+          </div>
+        </aside>
+
+      </div>
+    </div>
+  </section>
+</Layout>
